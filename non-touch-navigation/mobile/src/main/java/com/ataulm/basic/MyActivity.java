@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,40 +63,83 @@ public class MyActivity extends Activity {
 
     private static class FixedFocusGridLayoutManager extends GridLayoutManager {
 
-        public FixedFocusGridLayoutManager(Context context, int spanCount) {
+        FixedFocusGridLayoutManager(Context context, int spanCount) {
             super(context, spanCount);
         }
 
         @Override
-        public View onInterceptFocusSearch(View currentFocusedView, int direction) {
-            int position = getPosition(currentFocusedView);
+        public void addView(View child, int index) {
+            super.addView(child, index);
+            child.setOnKeyListener(new View.OnKeyListener() {
+                @Override
+                public boolean onKey(View view, int keyCode, KeyEvent event) {
+                    if (keyDownLeft(keyCode, event)) {
+                        return handleNextFocus(view, View.FOCUS_LEFT);
+                    } else if (keyDownRight(keyCode, event)) {
+                        return handleNextFocus(view, View.FOCUS_RIGHT);
+                    }
+
+                    return false;
+                }
+
+                private boolean keyDownLeft(int keyCode, KeyEvent event) {
+                    return event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DPAD_LEFT;
+                }
+
+                private boolean keyDownRight(int keyCode, KeyEvent event) {
+                    return event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DPAD_RIGHT;
+                }
+
+                private boolean handleNextFocus(View view, int focusRight) {
+                    View nextFocusableView = nextFocusableView(focusRight, view);
+                    if (nextFocusableView == null) {
+                        return false;
+                    }
+                    nextFocusableView.requestFocus();
+                    return true;
+                }
+
+            });
+        }
+
+        private View nextFocusableView(int direction, View currentFocusedView) {
+            int positionCurrentFocusedView = getPosition(currentFocusedView);
 
             switch (direction) {
-
                 case View.FOCUS_LEFT:
-                    return nextFocusableViewOnLeft(currentFocusedView, position);
+                    return nextFocusableViewOnLeft(positionCurrentFocusedView);
 
                 case View.FOCUS_RIGHT:
-                    return nextFocusableViewOnRight(currentFocusedView, position);
+                    return nextFocusableViewOnRight(positionCurrentFocusedView);
 
                 default:
-                    return super.onInterceptFocusSearch(currentFocusedView, direction);
-
+                    return null;
             }
         }
 
-        private View nextFocusableViewOnRight(View currentFocusedView, int position) {
-            if (position == getItemCount() - 1) {
-                return super.onInterceptFocusSearch(currentFocusedView, View.FOCUS_RIGHT);
-            }
-            return getChildAt(position + 1);
+        private View nextFocusableViewOnLeft(int positionCurrentFocusedView) {
+            return (positionCurrentFocusedView == 0) ? null : getChildAt(positionCurrentFocusedView - 1);
         }
 
-        private View nextFocusableViewOnLeft(View currentFocusedView, int position) {
-            if (position == 0) {
-                return super.onInterceptFocusSearch(currentFocusedView, View.FOCUS_LEFT);
-            }
-            return getChildAt(position - 1);
+        private View nextFocusableViewOnRight(int positionCurrentFocusedView) {
+            return (positionCurrentFocusedView == getItemCount() - 1) ? null : getChildAt(positionCurrentFocusedView + 1);
+        }
+
+        @Override
+        public void removeView(View child) {
+            super.removeView(child);
+            removeOnKeyListenerFrom(child);
+        }
+
+        private void removeOnKeyListenerFrom(View child) {
+            child.setOnKeyListener(null);
+        }
+
+        @Override
+        public void removeViewAt(int index) {
+            super.removeViewAt(index);
+            View child = getChildAt(index);
+            removeOnKeyListenerFrom(child);
         }
 
     }
