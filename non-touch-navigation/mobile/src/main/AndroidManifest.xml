@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.ataulm.basic">
+  package="com.novoda.nontouchnav">
 
   <application
     android:allowBackup="true"
@@ -7,11 +7,11 @@
     android:icon="@drawable/ic_launcher"
     android:theme="@style/AppTheme">
 
-    <activity android:name="com.ataulm.basic.MyActivity" />
+    <activity android:name="com.novoda.nontouchnav.MyActivity" />
 
     <activity-alias
       android:name="activity.primary_launcher"
-      android:targetActivity="com.ataulm.basic.MyActivity">
+      android:targetActivity="com.novoda.nontouchnav.MyActivity">
 
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />

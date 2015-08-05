@@ -1,4 +1,4 @@
-package com.ataulm.basic.recyclerview;
+package com.novoda.recyclerview;
 
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;

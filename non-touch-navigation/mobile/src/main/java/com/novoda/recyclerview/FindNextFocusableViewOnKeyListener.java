@@ -1,4 +1,4 @@
-package com.ataulm.basic.recyclerview;
+package com.novoda.recyclerview;
 
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;

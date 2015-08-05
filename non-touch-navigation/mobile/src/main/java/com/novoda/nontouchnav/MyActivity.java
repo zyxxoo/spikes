@@ -1,4 +1,4 @@
-package com.ataulm.basic;
+package com.novoda.nontouchnav;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -9,8 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.ataulm.basic.recyclerview.FixedFocusGridLayoutManager;
 import com.ataulm.vpa.ViewPagerAdapter;
+import com.novoda.recyclerview.FixedFocusGridLayoutManager;
 
 public class MyActivity extends Activity {
 
