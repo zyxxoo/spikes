@@ -1,8 +1,8 @@
 package com.ataulm.basic;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -49,6 +49,19 @@ public class MyActivity extends Activity {
         }
     }
 
+    private static class FixedFocusGridLayoutManager extends GridLayoutManager {
+
+        public FixedFocusGridLayoutManager(Context context, int spanCount) {
+            super(context, spanCount);
+        }
+
+        @Override
+        public View onInterceptFocusSearch(View focused, int direction) {
+            return super.onInterceptFocusSearch(focused, direction);
+        }
+
+    }
+
     private static class PagesAdapter extends ViewPagerAdapter {
 
         private static final int PAGE_COUNT = 3;
@@ -63,7 +76,7 @@ public class MyActivity extends Activity {
         @Override
         protected View getView(ViewGroup viewGroup, int i) {
             RecyclerView recyclerView = (RecyclerView) layoutInflater.inflate(R.layout.view_page, viewGroup, false);
-            recyclerView.setLayoutManager(new GridLayoutManager(viewGroup.getContext(), ITEMS_IN_ROW_SIZE));
+            recyclerView.setLayoutManager(new FixedFocusGridLayoutManager(viewGroup.getContext(), ITEMS_IN_ROW_SIZE));
             recyclerView.setAdapter(generateItemAdapter(i));
             return recyclerView;
         }
