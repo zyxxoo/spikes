@@ -57,10 +57,12 @@ class FindNextFocusableViewOnKeyListener implements View.OnKeyListener {
     }
 
     private View nextFocusableViewOnLeft(int positionCurrentFocusedView) {
+        // FIXME: this can still return null even if it's not first item - the previous view is completely off-screen
         return (positionCurrentFocusedView == 0) ? null : recyclerViewDataSet.getChildAt(positionCurrentFocusedView - 1);
     }
 
     private View nextFocusableViewOnRight(int positionCurrentFocusedView) {
+        // FIXME: this can still return null even if it's not last item - the next view is completely off-screen
         return (positionCurrentFocusedView == recyclerViewDataSet.getItemCount() - 1) ? null : recyclerViewDataSet.getChildAt(positionCurrentFocusedView + 1);
     }
 
