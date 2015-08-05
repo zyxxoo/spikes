@@ -26,6 +26,13 @@ public class MyActivity extends Activity {
         tabs = new View[]{findViewById(R.id.tab_one), findViewById(R.id.tab_two), findViewById(R.id.tab_three)};
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setAdapter(new PagesAdapter(getLayoutInflater()));
+        viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                activateTabAtPosition(position);
+            }
+        });
 
         showPage(0);
     }
@@ -44,6 +51,10 @@ public class MyActivity extends Activity {
 
     private void showPage(int page) {
         viewPager.setCurrentItem(page);
+        activateTabAtPosition(page);
+    }
+
+    private void activateTabAtPosition(int page) {
         for (int i = 0; i < tabs.length; i++) {
             tabs[i].setActivated(i == page);
         }
