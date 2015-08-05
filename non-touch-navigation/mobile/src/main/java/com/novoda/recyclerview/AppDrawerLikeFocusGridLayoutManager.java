@@ -4,9 +4,9 @@ import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
 import android.view.View;
 
-public class FixedFocusGridLayoutManager extends GridLayoutManager {
+public class AppDrawerLikeFocusGridLayoutManager extends GridLayoutManager {
 
-    public FixedFocusGridLayoutManager(Context context, int spanCount) {
+    public AppDrawerLikeFocusGridLayoutManager(Context context, int spanCount) {
         super(context, spanCount);
     }
 
@@ -16,17 +16,17 @@ public class FixedFocusGridLayoutManager extends GridLayoutManager {
         child.setOnKeyListener(new FindNextFocusableViewOnKeyListener(new FindNextFocusableViewOnKeyListener.RecyclerViewDataSet() {
             @Override
             public int getPosition(View view) {
-                return FixedFocusGridLayoutManager.this.getPosition(view);
+                return AppDrawerLikeFocusGridLayoutManager.this.getPosition(view);
             }
 
             @Override
             public View getChildAt(int position) {
-                return FixedFocusGridLayoutManager.this.getChildAt(position);
+                return AppDrawerLikeFocusGridLayoutManager.this.getChildAt(position);
             }
 
             @Override
             public int getItemCount() {
-                return FixedFocusGridLayoutManager.this.getItemCount();
+                return AppDrawerLikeFocusGridLayoutManager.this.getItemCount();
             }
         }));
     }

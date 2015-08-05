@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.ataulm.vpa.ViewPagerAdapter;
-import com.novoda.recyclerview.FixedFocusGridLayoutManager;
+import com.novoda.recyclerview.AppDrawerLikeFocusGridLayoutManager;
 
 public class MyActivity extends Activity {
 
@@ -73,7 +73,7 @@ public class MyActivity extends Activity {
         @Override
         protected View getView(ViewGroup viewGroup, int i) {
             RecyclerView recyclerView = (RecyclerView) layoutInflater.inflate(R.layout.view_page, viewGroup, false);
-            recyclerView.setLayoutManager(new FixedFocusGridLayoutManager(viewGroup.getContext(), ITEMS_IN_ROW_SIZE));
+            recyclerView.setLayoutManager(new AppDrawerLikeFocusGridLayoutManager(viewGroup.getContext(), ITEMS_IN_ROW_SIZE));
             recyclerView.setAdapter(generateItemAdapter(i));
             return recyclerView;
         }
