@@ -1,0 +1,10 @@
+<resources>
+  <color name="focused">@android:color/holo_orange_light</color>
+
+  <color name="tab_background_pressed">@android:color/holo_orange_dark</color>
+  <color name="tab_background_focused">@color/focused</color>
+  <color name="tab_background_default">#FAF893</color>
+
+  <color name="item_background_focused">@color/focused</color>
+  <color name="item_background_default">@android:color/white</color>
+</resources>
