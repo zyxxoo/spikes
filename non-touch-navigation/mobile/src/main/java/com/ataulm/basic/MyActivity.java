@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,59 +69,22 @@ public class MyActivity extends Activity {
         @Override
         public void addView(View child, int index) {
             super.addView(child, index);
-            child.setOnKeyListener(new View.OnKeyListener() {
+            child.setOnKeyListener(new FindNextFocusableViewOnKeyListener(new FindNextFocusableViewOnKeyListener.RecyclerViewDataSet() {
                 @Override
-                public boolean onKey(View view, int keyCode, KeyEvent event) {
-                    if (keyDownLeft(keyCode, event)) {
-                        return handleNextFocus(view, View.FOCUS_LEFT);
-                    } else if (keyDownRight(keyCode, event)) {
-                        return handleNextFocus(view, View.FOCUS_RIGHT);
-                    }
-
-                    return false;
+                public int getPosition(View view) {
+                    return FixedFocusGridLayoutManager.this.getPosition(view);
                 }
 
-                private boolean keyDownLeft(int keyCode, KeyEvent event) {
-                    return event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DPAD_LEFT;
+                @Override
+                public View getChildAt(int position) {
+                    return FixedFocusGridLayoutManager.this.getChildAt(position);
                 }
 
-                private boolean keyDownRight(int keyCode, KeyEvent event) {
-                    return event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DPAD_RIGHT;
+                @Override
+                public int getItemCount() {
+                    return FixedFocusGridLayoutManager.this.getItemCount();
                 }
-
-                private boolean handleNextFocus(View view, int focusRight) {
-                    View nextFocusableView = nextFocusableView(focusRight, view);
-                    if (nextFocusableView == null) {
-                        return false;
-                    }
-                    nextFocusableView.requestFocus();
-                    return true;
-                }
-
-            });
-        }
-
-        private View nextFocusableView(int direction, View currentFocusedView) {
-            int positionCurrentFocusedView = getPosition(currentFocusedView);
-
-            switch (direction) {
-                case View.FOCUS_LEFT:
-                    return nextFocusableViewOnLeft(positionCurrentFocusedView);
-
-                case View.FOCUS_RIGHT:
-                    return nextFocusableViewOnRight(positionCurrentFocusedView);
-
-                default:
-                    return null;
-            }
-        }
-
-        private View nextFocusableViewOnLeft(int positionCurrentFocusedView) {
-            return (positionCurrentFocusedView == 0) ? null : getChildAt(positionCurrentFocusedView - 1);
-        }
-
-        private View nextFocusableViewOnRight(int positionCurrentFocusedView) {
-            return (positionCurrentFocusedView == getItemCount() - 1) ? null : getChildAt(positionCurrentFocusedView + 1);
+            }));
         }
 
         @Override
