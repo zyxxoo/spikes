@@ -67,8 +67,35 @@ public class MyActivity extends Activity {
         }
 
         @Override
-        public View onInterceptFocusSearch(View focused, int direction) {
-            return super.onInterceptFocusSearch(focused, direction);
+        public View onInterceptFocusSearch(View currentFocusedView, int direction) {
+            int position = getPosition(currentFocusedView);
+
+            switch (direction) {
+
+                case View.FOCUS_LEFT:
+                    return nextFocusableViewOnLeft(currentFocusedView, position);
+
+                case View.FOCUS_RIGHT:
+                    return nextFocusableViewOnRight(currentFocusedView, position);
+
+                default:
+                    return super.onInterceptFocusSearch(currentFocusedView, direction);
+
+            }
+        }
+
+        private View nextFocusableViewOnRight(View currentFocusedView, int position) {
+            if (position == getItemCount() - 1) {
+                return super.onInterceptFocusSearch(currentFocusedView, View.FOCUS_RIGHT);
+            }
+            return getChildAt(position + 1);
+        }
+
+        private View nextFocusableViewOnLeft(View currentFocusedView, int position) {
+            if (position == 0) {
+                return super.onInterceptFocusSearch(currentFocusedView, View.FOCUS_LEFT);
+            }
+            return getChildAt(position - 1);
         }
 
     }
@@ -147,6 +174,5 @@ public class MyActivity extends Activity {
         }
 
     }
-
 
 }
