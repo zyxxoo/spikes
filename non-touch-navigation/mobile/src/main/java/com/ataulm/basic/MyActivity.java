@@ -1,16 +1,15 @@
 package com.ataulm.basic;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ataulm.basic.recyclerview.FixedFocusGridLayoutManager;
 import com.ataulm.vpa.ViewPagerAdapter;
 
 public class MyActivity extends Activity {
@@ -58,52 +57,6 @@ public class MyActivity extends Activity {
         for (int i = 0; i < tabs.length; i++) {
             tabs[i].setActivated(i == page);
         }
-    }
-
-    private static class FixedFocusGridLayoutManager extends GridLayoutManager {
-
-        FixedFocusGridLayoutManager(Context context, int spanCount) {
-            super(context, spanCount);
-        }
-
-        @Override
-        public void addView(View child, int index) {
-            super.addView(child, index);
-            child.setOnKeyListener(new FindNextFocusableViewOnKeyListener(new FindNextFocusableViewOnKeyListener.RecyclerViewDataSet() {
-                @Override
-                public int getPosition(View view) {
-                    return FixedFocusGridLayoutManager.this.getPosition(view);
-                }
-
-                @Override
-                public View getChildAt(int position) {
-                    return FixedFocusGridLayoutManager.this.getChildAt(position);
-                }
-
-                @Override
-                public int getItemCount() {
-                    return FixedFocusGridLayoutManager.this.getItemCount();
-                }
-            }));
-        }
-
-        @Override
-        public void removeView(View child) {
-            super.removeView(child);
-            removeOnKeyListenerFrom(child);
-        }
-
-        private void removeOnKeyListenerFrom(View child) {
-            child.setOnKeyListener(null);
-        }
-
-        @Override
-        public void removeViewAt(int index) {
-            super.removeViewAt(index);
-            View child = getChildAt(index);
-            removeOnKeyListenerFrom(child);
-        }
-
     }
 
     private static class PagesAdapter extends ViewPagerAdapter {
