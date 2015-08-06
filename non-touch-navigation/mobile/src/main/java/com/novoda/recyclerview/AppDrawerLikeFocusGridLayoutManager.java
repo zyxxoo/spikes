@@ -45,7 +45,9 @@ public class AppDrawerLikeFocusGridLayoutManager extends GridLayoutManager {
     public void removeViewAt(int index) {
         super.removeViewAt(index);
         View child = getChildAt(index);
-        removeOnKeyListenerFrom(child);
+        if (child != null) {
+            removeOnKeyListenerFrom(child);
+        }
     }
 
 }
