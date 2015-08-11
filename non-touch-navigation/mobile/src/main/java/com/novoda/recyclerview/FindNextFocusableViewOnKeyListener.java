@@ -2,25 +2,28 @@ package com.novoda.recyclerview;
 
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.TextView;
 
 class FindNextFocusableViewOnKeyListener implements View.OnKeyListener {
 
-    private final RecyclerViewDataSet recyclerViewDataSet;
+    private final Callbacks callbacks;
 
-    FindNextFocusableViewOnKeyListener(RecyclerViewDataSet recyclerViewDataSet) {
-        this.recyclerViewDataSet = recyclerViewDataSet;
+    FindNextFocusableViewOnKeyListener(Callbacks callbacks) {
+        this.callbacks = callbacks;
     }
 
     @Override
     public boolean onKey(View view, int keyCode, KeyEvent event) {
         if (keyDownLeft(keyCode, event)) {
+            Log.d("FOOO", "onKeyDown LEFT on view at position: " + ((TextView) view).getText());
             return handleNextFocus(view, View.FOCUS_LEFT);
         } else if (keyDownRight(keyCode, event)) {
+            Log.d("FOOO", "onKeyDown RIGHT on view at position: " + ((TextView) view).getText());
             return handleNextFocus(view, View.FOCUS_RIGHT);
         }
-
         return false;
     }
 
@@ -32,9 +35,13 @@ class FindNextFocusableViewOnKeyListener implements View.OnKeyListener {
         return event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DPAD_RIGHT;
     }
 
-    private boolean handleNextFocus(View view, int focusRight) {
-        View nextFocusableView = nextFocusableView(focusRight, view);
+    /**
+     * @return whether the focus was handled or not
+     */
+    private boolean handleNextFocus(View view, int focusDirection) {
+        View nextFocusableView = nextFocusableView(focusDirection, view);
         if (nextFocusableView == null) {
+            Log.d("FOOO", "handleNextFocus() dunno what to focus on next, returning null");
             return false;
         }
         nextFocusableView.requestFocus();
@@ -42,41 +49,46 @@ class FindNextFocusableViewOnKeyListener implements View.OnKeyListener {
     }
 
     private View nextFocusableView(int direction, View currentFocusedView) {
-        int positionCurrentFocusedView = recyclerViewDataSet.getPosition(currentFocusedView);
+        int positionCurrentFocusedView = callbacks.getChildAdapterPosition(currentFocusedView);
 
         switch (direction) {
             case View.FOCUS_LEFT:
-                return nextFocusableViewOnLeft(positionCurrentFocusedView);
+                return nextFocusableView(positionCurrentFocusedView - 1);
 
             case View.FOCUS_RIGHT:
-                return nextFocusableViewOnRight(positionCurrentFocusedView);
+                return nextFocusableView(positionCurrentFocusedView + 1);
 
             default:
                 return null;
         }
     }
 
-    private View nextFocusableViewOnLeft(int positionCurrentFocusedView) {
-        // FIXME: this can still return null even if it's not first item - the previous view is completely off-screen
-        return (positionCurrentFocusedView == 0) ? null : recyclerViewDataSet.getChildAt(positionCurrentFocusedView - 1);
+    private View nextFocusableView(int targetPosition) {
+        if (targetPosition < 0 || targetPosition > callbacks.getItemCount() - 1) {
+            return null;
+        }
+        callbacks.smoothScrollToPosition(targetPosition);
+        RecyclerView.ViewHolder viewHolder = callbacks.findViewHolderForAdapterPosition(targetPosition);
+
+        if (viewHolder == null) {
+            return null;
+        } else {
+            return viewHolder.itemView;
+        }
     }
 
-    private View nextFocusableViewOnRight(int positionCurrentFocusedView) {
-        // FIXME: this can still return null even if it's not last item - the next view is completely off-screen
-        return (positionCurrentFocusedView == recyclerViewDataSet.getItemCount() - 1) ? null : recyclerViewDataSet.getChildAt(positionCurrentFocusedView + 1);
-    }
+    interface Callbacks {
 
-    interface RecyclerViewDataSet {
         /**
          * Get adapter position of item view, or {@link RecyclerView.NO_POSITION} if not found.
          */
-        int getPosition(View view);
+        int getChildAdapterPosition(View view);
 
         /**
-         * View at position
+         * ViewHolder at position
          */
         @Nullable
-        View getChildAt(int position);
+        RecyclerView.ViewHolder findViewHolderForAdapterPosition(int position);
 
         /**
          * Number of items in bound adapter.
@@ -84,6 +96,8 @@ class FindNextFocusableViewOnKeyListener implements View.OnKeyListener {
          * @return
          */
         int getItemCount();
+
+        void smoothScrollToPosition(int position);
     }
 
 }

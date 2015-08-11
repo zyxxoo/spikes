@@ -61,7 +61,7 @@ public class MyActivity extends Activity {
 
     private static class PagesAdapter extends ViewPagerAdapter {
 
-        private static final int PAGE_COUNT = 3;
+        private static final int PAGE_COUNT = 1;
         private static final int ITEMS_IN_ROW_SIZE = 3;
 
         private final LayoutInflater layoutInflater;
@@ -73,7 +73,7 @@ public class MyActivity extends Activity {
         @Override
         protected View getView(ViewGroup viewGroup, int i) {
             RecyclerView recyclerView = (RecyclerView) layoutInflater.inflate(R.layout.view_page, viewGroup, false);
-            recyclerView.setLayoutManager(new AppDrawerLikeFocusGridLayoutManager(viewGroup.getContext(), ITEMS_IN_ROW_SIZE));
+            recyclerView.setLayoutManager(new AppDrawerLikeFocusGridLayoutManager(viewGroup.getContext(), ITEMS_IN_ROW_SIZE, recyclerView));
             recyclerView.setAdapter(generateItemAdapter(i));
             return recyclerView;
         }
